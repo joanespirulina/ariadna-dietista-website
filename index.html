@@ -38,6 +38,25 @@
       #prices li:nth-last-child(-n+2) {
         display: none !important;
       }
+
+      /* Hide any stray checkmark icons that appear after the pricing list. In some builds the
+         extra SVG icons are appended as standalone elements rather than empty <li> nodes. We
+         target the last two SVG elements within the pricing sections across all languages. */
+      #precios svg:nth-last-child(-n+2),
+      #preus svg:nth-last-child(-n+2),
+      #prices svg:nth-last-child(-n+2) {
+        display: none !important;
+      }
+
+      /* Hide any paragraphs inside the contact section across all language variants. The contact
+         form normally includes a subtitle like "Te responderé lo antes posible..." or its
+         Catalan equivalent. Once the form is replaced by the video we don't need this extra
+         description, so hiding <p> elements in the contact section ensures they don't appear. */
+      #contacto p,
+      #contacte p,
+      #contact p {
+        display: none !important;
+      }
     </style>
 
   </head>
@@ -74,13 +93,29 @@
             });
           });
         }
-        // Continuously call removeStrayListItems every half second to catch late-rendered
-        // elements. This timer will run indefinitely, but the operation is inexpensive since
-        // it only checks a few nodes.
+
+        // Additional helper to remove stray SVG icons that are not contained within a list item.
+        // In some language versions of the pricing section (and other lists), extra tick icons
+        // are appended as standalone <svg> elements after the list. These icons do not reside
+        // inside an <li> element and therefore won't be removed by removeStrayListItems().
+        function removeStraySvgIcons() {
+          document.querySelectorAll('#precios svg, #preus svg, #prices svg').forEach(function (svg) {
+            // If the SVG is not nested inside an <li> element, it's considered stray and removed.
+            if (!svg.closest('li')) {
+              svg.remove();
+            }
+          });
+        }
+
+        // Continuously call removeStrayListItems and removeStraySvgIcons every half second to
+        // catch late-rendered elements. This timer will run indefinitely, but the operation
+        // is inexpensive since it only checks a few nodes.
         (function runRemoveLoop() {
           removeStrayListItems();
+          removeStraySvgIcons();
           setTimeout(runRemoveLoop, 500);
         })();
+
         function waitForElement(selector, callback) {
           const el = document.querySelector(selector);
           if (el) {
