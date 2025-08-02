@@ -54,15 +54,19 @@
         // only whitespace or no text. To make sure later insertions are also cleaned up, we'll
         // call this helper repeatedly using a simple timer.
         function removeStrayListItems() {
-          const selectors = ['#precios li', '#preus li', '#prices li'];
-          selectors.forEach(function(sel) {
-            document.querySelectorAll(sel).forEach(function(li) {
+          // Scan all list items across the page so we can hide any empty bullet points.
+          // Using a global selector means this helper cleans up stray check icons not just
+          // in pricing sections but also in other lists (e.g. "Pistes per al desbloqueig emocional").
+          const selectors = ['ul li'];
+          selectors.forEach(function (sel) {
+            document.querySelectorAll(sel).forEach(function (li) {
               // innerText returns the visible text inside the element. We treat a list item as
-              // stray if, after trimming whitespace, its visible text is empty or very short
-              // (some locales may insert a non‑breaking space, which should also be ignored).
+              // stray if, after trimming whitespace and non-breaking spaces, its visible
+              // text is empty. In that case we remove the element entirely so the
+              // associated tick icon does not render.
               var text = li.innerText.replace(/\u00a0/g, '').trim();
               if (text.length === 0) {
-                li.style.display = 'none';
+                li.remove();
               }
             });
           });
@@ -100,11 +104,12 @@
                 container.removeChild(container.firstChild);
               }
             }
-            // Hide the subtitle paragraph (the small description under the heading) to show only the heading
-            var subtitle = contactSection.querySelector('p');
-            if (subtitle) {
-              subtitle.style.display = 'none';
-            }
+            // Remove any subtitle paragraphs inside the contact section so that only the heading
+            // remains visible before the video. This handles translations where multiple <p>
+            // elements may be inserted (e.g. "Et respondré el més aviat possible...").
+            contactSection.querySelectorAll('p').forEach(function(p) {
+              p.remove();
+            });
             // Create a responsive video wrapper
             var videoWrapper = document.createElement('div');
             videoWrapper.style.position = 'relative';
