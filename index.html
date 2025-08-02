@@ -117,6 +117,21 @@ function removeStraySvgIcons() {
             if (!svg.closest('li')) {
               svg.remove();
             }
+
+        // Helper to remove any subtitle paragraphs that remain above the video in the contact section.
+        // Some language variants inject a paragraph like "Te responderé lo antes posible para resolver tus dudas"
+        // or "Et respondré el més aviat possible per resoldre els teus dubtes" above the contact form/video. We
+        // remove any <p> elements within the contact sections that contain the words "dudas" or "dubtes".
+        function removeContactSubtitle() {
+          document.querySelectorAll('#contacto, #contacte, #contact').forEach(function (contactSection) {
+            contactSection.querySelectorAll('p').forEach(function (p) {
+              var t = p.innerText.toLowerCase();
+              if (t.includes('dudas') || t.includes('dubtes')) {
+                p.remove();
+              }
+            });
+          });
+        }
           });
         }
 
@@ -126,6 +141,7 @@ function removeStraySvgIcons() {
         (function runRemoveLoop() {
           removeStrayListItems();
           removeStraySvgIcons();
+          removeContactSubtitle();
           setTimeout(runRemoveLoop, 500);
         })();
 
