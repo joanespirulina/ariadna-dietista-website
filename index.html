@@ -5,6 +5,14 @@
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ariadna Serra - Nutrición Personalizada Online | Dietista España</title>
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-81Y1C6DC1Z"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-81Y1C6DC1Z');
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -29,10 +37,17 @@
 
     <!-- Inject YouTube video and hide contact form after the React app mounts -->
     <script>
+      // Wait for DOMContentLoaded and then poll for the contact section until it exists
       document.addEventListener('DOMContentLoaded', function () {
-        // Locate the contact section by its id
-        var contactSection = document.querySelector('#contacto');
-        if (contactSection) {
+        function waitForElement(selector, callback) {
+          const el = document.querySelector(selector);
+          if (el) {
+            callback(el);
+          } else {
+            setTimeout(() => waitForElement(selector, callback), 100);
+          }
+        }
+        waitForElement('#contacto', function (contactSection) {
           // Hide the existing contact form if present
           var form = contactSection.querySelector('form');
           if (form) {
@@ -57,7 +72,7 @@
           videoWrapper.appendChild(iframe);
           // Append the video wrapper to the contact section
           contactSection.appendChild(videoWrapper);
-        }
+        });
       });
     </script>
   </body>
