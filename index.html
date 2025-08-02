@@ -48,6 +48,16 @@
         display: none !important;
       }
 
+      /* Hide the first element immediately following the contact heading across all language
+         variants. The contact section typically includes a subtitle (e.g., "Te responderé lo
+         antes posible para resolver tus dudas" or its Catalan equivalent) directly after the
+         <h2> heading. Hiding this sibling ensures only the heading and video are visible. */
+      #contacto h2 + *,
+      #contacte h2 + *,
+      #contact h2 + * {
+        display: none !important;
+      }
+
       /* Hide any paragraphs inside the contact section across all language variants. The contact
          form normally includes a subtitle like "Te responderé lo antes posible..." or its
          Catalan equivalent. Once the form is replaced by the video we don't need this extra
