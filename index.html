@@ -21,19 +21,21 @@
     <!-- Custom overrides to hide contact details and adjust layout -->
     <style>
       /* Hide the left column (contact details) in the contact section and make the form span the full width */
-      #contacto .grid { grid-template-columns: 1fr !important; }
-      #contacto .grid > div:first-child { display: none !important; }
-
-      /* Hide the last two list items in the pricing section to remove stray check icons */
-      /* The pricing section has a finite number of features; the last two items are empty placeholders */
-      #precios li:nth-last-child(-n+2) {
+      /* Apply this rule for all language variants of the contact section */
+      #contacto .grid, #contacte .grid, #contact .grid {
+        grid-template-columns: 1fr !important;
+      }
+      #contacto .grid > div:first-child,
+      #contacte .grid > div:first-child,
+      #contact .grid > div:first-child {
         display: none !important;
       }
 
-      /* Hide any empty list items globally to catch stray check icons in all languages */
-      /* Some pricing lists render empty <li> elements that only contain an icon but no text. */
-      /* This rule ensures those empty list items are removed across the site. */
-      li:empty {
+      /* Hide the last two list items in the pricing section to remove stray check icons */
+      /* Apply this rule for all language variants: Spanish (#precios), Catalan (#preus) and English (#prices) */
+      #precios li:nth-last-child(-n+2),
+      #preus li:nth-last-child(-n+2),
+      #prices li:nth-last-child(-n+2) {
         display: none !important;
       }
     </style>
@@ -54,31 +56,38 @@
             setTimeout(() => waitForElement(selector, callback), 100);
           }
         }
-        waitForElement('#contacto', function (contactSection) {
-          // Hide the existing contact form if present
-          var form = contactSection.querySelector('form');
-          if (form) {
-            form.style.display = 'none';
-          }
-          // Create a responsive video wrapper
-          var videoWrapper = document.createElement('div');
-          videoWrapper.style.position = 'relative';
-          videoWrapper.style.paddingBottom = '56.25%';
-          videoWrapper.style.height = '0';
-          videoWrapper.style.overflow = 'hidden';
-          // Create the iframe element for the YouTube video
-          var iframe = document.createElement('iframe');
-          iframe.src = 'https://www.youtube.com/embed/v6_nlVJWVNA';
-          iframe.frameBorder = '0';
-          iframe.allowFullscreen = true;
-          iframe.style.position = 'absolute';
-          iframe.style.top = '0';
-          iframe.style.left = '0';
-          iframe.style.width = '100%';
-          iframe.style.height = '100%';
-          videoWrapper.appendChild(iframe);
-          // Append the video wrapper to the contact section
-          contactSection.appendChild(videoWrapper);
+        // Listen for all possible language variants of the contact section
+        const contactSelectors = ['#contacto', '#contacte', '#contact'];
+        contactSelectors.forEach(function(sel) {
+          waitForElement(sel, function (contactSection) {
+            // Prevent injecting the video multiple times in the same section
+            if (contactSection.dataset.videoInjected) return;
+            contactSection.dataset.videoInjected = 'true';
+            // Hide the existing contact form if present
+            var form = contactSection.querySelector('form');
+            if (form) {
+              form.style.display = 'none';
+            }
+            // Create a responsive video wrapper
+            var videoWrapper = document.createElement('div');
+            videoWrapper.style.position = 'relative';
+            videoWrapper.style.paddingBottom = '56.25%';
+            videoWrapper.style.height = '0';
+            videoWrapper.style.overflow = 'hidden';
+            // Create the iframe element for the YouTube video
+            var iframe = document.createElement('iframe');
+            iframe.src = 'https://www.youtube.com/embed/v6_nlVJWVNA';
+            iframe.frameBorder = '0';
+            iframe.allowFullscreen = true;
+            iframe.style.position = 'absolute';
+            iframe.style.top = '0';
+            iframe.style.left = '0';
+            iframe.style.width = '100%';
+            iframe.style.height = '100%';
+            videoWrapper.appendChild(iframe);
+            // Append the video wrapper to the contact section
+            contactSection.appendChild(videoWrapper);
+          });
         });
       });
     </script>
