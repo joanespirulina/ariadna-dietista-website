@@ -29,6 +29,13 @@
       #precios li:nth-last-child(-n+2) {
         display: none !important;
       }
+
+      /* Hide any empty list items globally to catch stray check icons in all languages */
+      /* Some pricing lists render empty <li> elements that only contain an icon but no text. */
+      /* This rule ensures those empty list items are removed across the site. */
+      li:empty {
+        display: none !important;
+      }
     </style>
 
   </head>
