@@ -123,11 +123,20 @@ function removeStraySvgIcons() {
         // or "Et respondré el més aviat possible per resoldre els teus dubtes" above the contact form/video. We
         // remove any <p> elements within the contact sections that contain the words "dudas" or "dubtes".
         function removeContactSubtitle() {
-          document.querySelectorAll('#contacto, #contacte, #contact').forEach(function (contactSection) {
-            contactSection.querySelectorAll('p').forEach(function (p) {
-              var t = p.innerText.toLowerCase();
-              if (t.includes('dudas') || t.includes('dubtes')) {
-                p.remove();
+          // Iterate through each contact section (all languages) and remove any element whose text
+          // contains the Spanish word "dudas" or the Catalan word "dubtes". This ensures
+          // subtitles like "Te responderé lo antes posible para resolver tus dudas" or
+          // "Et respondré el més aviat possible per resoldre els teus dubtes" are removed.
+          document.querySelectorAll('#contacto, #contacte, #contact').forEach(function (section) {
+            section.querySelectorAll('*').forEach(function (el) {
+              // innerText might throw on some non-element nodes; wrap in try/catch
+              try {
+                var text = (el.innerText || '').toLowerCase();
+                if (text.includes('dudas') || text.includes('dubtes')) {
+                  el.remove();
+                }
+              } catch (err) {
+                // ignore
               }
             });
           });
