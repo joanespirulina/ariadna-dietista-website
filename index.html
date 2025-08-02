@@ -104,43 +104,35 @@
           });
         }
 
-        // Additional helper to remove stray SVG icons that are not contained within a list item.
-        // In some language versions of the pricing section (and other lists), extra tick icons
+        // Helper to remove stray SVG icons that are not contained within a list item.
+        // In some language versions of the pricing or tips sections, extra tick icons
         // are appended as standalone <svg> elements after the list. These icons do not reside
         // inside an <li> element and therefore won't be removed by removeStrayListItems().
-function removeStraySvgIcons() {
-          // Remove stray SVG icons that are not part of a list item. These often appear at the end
-          // of dynamically generated lists (e.g., pricing features or tips) as standalone elements.
-          // We search within the pricing sections across all languages and also for any <svg>
-          // that is a direct child of a <ul>. If a SVG is not nested inside an <li>, we remove it.
-          document.querySelectorAll('#precios svg, #preus svg, #prices svg, ul > svg').forEach(function (svg) {
+        function removeStraySvgIcons() {
+          // Select every SVG on the page and remove it if it is not nested inside a list item.
+          document.querySelectorAll('svg').forEach(function (svg) {
             if (!svg.closest('li')) {
               svg.remove();
             }
+          });
+        }
 
-        // Helper to remove any subtitle paragraphs that remain above the video in the contact section.
-        // Some language variants inject a paragraph like "Te responderé lo antes posible para resolver tus dudas"
-        // or "Et respondré el més aviat possible per resoldre els teus dubtes" above the contact form/video. We
-        // remove any <p> elements within the contact sections that contain the words "dudas" or "dubtes".
+        // Helper to remove any subtitle or tagline that appears in the contact sections.
+        // Some language variants inject a paragraph like "Te responderé lo antes posible per..." or
+        // "Et respondré el més aviat possible per..." above the contact form/video. We remove any
+        // element whose text contains the keywords "dudas" or "dubtes".
         function removeContactSubtitle() {
-          // Iterate through each contact section (all languages) and remove any element whose text
-          // contains the Spanish word "dudas" or the Catalan word "dubtes". This ensures
-          // subtitles like "Te responderé lo antes posible para resolver tus dudas" or
-          // "Et respondré el més aviat possible per resoldre els teus dubtes" are removed.
           document.querySelectorAll('#contacto, #contacte, #contact').forEach(function (section) {
             section.querySelectorAll('*').forEach(function (el) {
-              // innerText might throw on some non-element nodes; wrap in try/catch
               try {
                 var text = (el.innerText || '').toLowerCase();
-                if (text.includes('dudas') || text.includes('dubtes')) {
+                if (text.includes('dubtes') || text.includes('dudas')) {
                   el.remove();
                 }
               } catch (err) {
-                // ignore
+                // ignore errors when accessing innerText
               }
             });
-          });
-        }
           });
         }
 
