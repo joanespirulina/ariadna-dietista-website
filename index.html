@@ -57,7 +57,11 @@
           const selectors = ['#precios li', '#preus li', '#prices li'];
           selectors.forEach(function(sel) {
             document.querySelectorAll(sel).forEach(function(li) {
-              if (li.textContent.trim().length === 0) {
+              // innerText returns the visible text inside the element. We treat a list item as
+              // stray if, after trimming whitespace, its visible text is empty or very short
+              // (some locales may insert a non‑breaking space, which should also be ignored).
+              var text = li.innerText.replace(/\u00a0/g, '').trim();
+              if (text.length === 0) {
                 li.style.display = 'none';
               }
             });
@@ -88,11 +92,18 @@
             // Hide the existing contact form if present
             var form = contactSection.querySelector('form');
             if (form) {
-              // Hide the container that wraps the form so that no empty box remains in the layout.
-              // In the generated markup, the form is a direct child of the grid, so hiding the
-              // parent element collapses its space completely.
               var container = form.parentElement;
-              container.style.display = 'none';
+              // Remove the form itself but keep its container so that we can reuse it for the video.
+              form.remove();
+              // Any children inside the container are removed.
+              while (container.firstChild) {
+                container.removeChild(container.firstChild);
+              }
+            }
+            // Hide the subtitle paragraph (the small description under the heading) to show only the heading
+            var subtitle = contactSection.querySelector('p');
+            if (subtitle) {
+              subtitle.style.display = 'none';
             }
             // Create a responsive video wrapper
             var videoWrapper = document.createElement('div');
@@ -100,6 +111,7 @@
             videoWrapper.style.paddingBottom = '56.25%';
             videoWrapper.style.height = '0';
             videoWrapper.style.overflow = 'hidden';
+            videoWrapper.style.width = '100%';
             // Create the iframe element for the YouTube video
             var iframe = document.createElement('iframe');
             iframe.src = 'https://www.youtube.com/embed/v6_nlVJWVNA';
@@ -111,8 +123,12 @@
             iframe.style.width = '100%';
             iframe.style.height = '100%';
             videoWrapper.appendChild(iframe);
-            // Append the video wrapper to the contact section
-            contactSection.appendChild(videoWrapper);
+            // Append the video wrapper into the existing container if present; otherwise append to section
+            if (form && container) {
+              container.appendChild(videoWrapper);
+            } else {
+              contactSection.appendChild(videoWrapper);
+            }
           });
         });
 
