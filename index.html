@@ -108,9 +108,12 @@
         // In some language versions of the pricing section (and other lists), extra tick icons
         // are appended as standalone <svg> elements after the list. These icons do not reside
         // inside an <li> element and therefore won't be removed by removeStrayListItems().
-        function removeStraySvgIcons() {
-          document.querySelectorAll('#precios svg, #preus svg, #prices svg').forEach(function (svg) {
-            // If the SVG is not nested inside an <li> element, it's considered stray and removed.
+function removeStraySvgIcons() {
+          // Remove stray SVG icons that are not part of a list item. These often appear at the end
+          // of dynamically generated lists (e.g., pricing features or tips) as standalone elements.
+          // We search within the pricing sections across all languages and also for any <svg>
+          // that is a direct child of a <ul>. If a SVG is not nested inside an <li>, we remove it.
+          document.querySelectorAll('#precios svg, #preus svg, #prices svg, ul > svg').forEach(function (svg) {
             if (!svg.closest('li')) {
               svg.remove();
             }
@@ -158,6 +161,21 @@
             contactSection.querySelectorAll('p').forEach(function(p) {
               p.remove();
             });
+            // Also remove any element that appears directly after the <h2> heading and before the
+            // grid/form container. In some language variants the subtitle is rendered as a <div>
+            // or other element rather than a <p>. We iterate through siblings after the heading
+            // until we reach a container with class "grid" (which holds the form/video) and remove
+            // each. This ensures that the tagline "Et respondré el més aviat possible..." or its
+            // equivalents are removed regardless of tag type.
+            var heading = contactSection.querySelector('h2');
+            if (heading) {
+              var sibling = heading.nextElementSibling;
+              while (sibling && !(sibling.classList && sibling.classList.contains('grid'))) {
+                var nextSibling = sibling.nextElementSibling;
+                sibling.remove();
+                sibling = nextSibling;
+              }
+            }
             // Create a responsive video wrapper
             var videoWrapper = document.createElement('div');
             videoWrapper.style.position = 'relative';
