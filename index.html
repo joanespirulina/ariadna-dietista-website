@@ -176,6 +176,19 @@ function removeStraySvgIcons() {
                 sibling = nextSibling;
               }
             }
+
+            // As an additional safeguard, search for any element whose text includes the
+            // translated tagline (e.g. "Te responderé lo antes posible..." or "Et respondré el més
+            // aviat possible...") and remove it. This captures subtitles rendered with
+            // unexpected markup or class names. Use a case-insensitive regular expression and
+            // check both Spanish and Catalan phrases.
+            contactSection.querySelectorAll('*').forEach(function(node) {
+              var txt = '';
+              if (node.innerText) txt = node.innerText.trim().toLowerCase();
+              if (txt.includes('resoldre els teus dubtes') || txt.includes('resolver tus dudas')) {
+                node.remove();
+              }
+            });
             // Create a responsive video wrapper
             var videoWrapper = document.createElement('div');
             videoWrapper.style.position = 'relative';
