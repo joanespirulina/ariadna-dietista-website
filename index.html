@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ariadna Serra - Nutrición Personalizada Online | Dietista España</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script type="module" crossorigin src="/assets/index-D2ai1VmT.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-dONb-_p5.css">
+    <!-- Custom overrides to hide contact details and adjust layout -->
+    <style>
+      /* Hide the left column (contact details) in the contact section and make the form span the full width */
+      #contacto .grid { grid-template-columns: 1fr !important; }
+      #contacto .grid > div:first-child { display: none !important; }
+
+      /* Hide the last two list items in the pricing section to remove stray check icons */
+      /* The pricing section has a finite number of features; the last two items are empty placeholders */
+      #precios li:nth-last-child(-n+2) {
+        display: none !important;
+      }
+    </style>
+
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <!-- Inject YouTube video and hide contact form after the React app mounts -->
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        // Locate the contact section by its id
+        var contactSection = document.querySelector('#contacto');
+        if (contactSection) {
+          // Hide the existing contact form if present
+          var form = contactSection.querySelector('form');
+          if (form) {
+            form.style.display = 'none';
+          }
+          // Create a responsive video wrapper
+          var videoWrapper = document.createElement('div');
+          videoWrapper.style.position = 'relative';
+          videoWrapper.style.paddingBottom = '56.25%';
+          videoWrapper.style.height = '0';
+          videoWrapper.style.overflow = 'hidden';
+          // Create the iframe element for the YouTube video
+          var iframe = document.createElement('iframe');
+          iframe.src = 'https://www.youtube.com/embed/v6_nlVJWVNA';
+          iframe.frameBorder = '0';
+          iframe.allowFullscreen = true;
+          iframe.style.position = 'absolute';
+          iframe.style.top = '0';
+          iframe.style.left = '0';
+          iframe.style.width = '100%';
+          iframe.style.height = '100%';
+          videoWrapper.appendChild(iframe);
+          // Append the video wrapper to the contact section
+          contactSection.appendChild(videoWrapper);
+        }
+      });
+    </script>
+  </body>
+</html>
