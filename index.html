@@ -48,6 +48,28 @@
     <script>
       // Wait for DOMContentLoaded and then poll for the contact section until it exists
       document.addEventListener('DOMContentLoaded', function () {
+        // Helper to remove stray empty list items in the pricing sections across languages. The
+        // pricing lists are populated dynamically by the React app, so empty list items may be
+        // injected after DOMContentLoaded. We define a helper that hides any <li> that contains
+        // only whitespace or no text. To make sure later insertions are also cleaned up, we'll
+        // call this helper repeatedly using a simple timer.
+        function removeStrayListItems() {
+          const selectors = ['#precios li', '#preus li', '#prices li'];
+          selectors.forEach(function(sel) {
+            document.querySelectorAll(sel).forEach(function(li) {
+              if (li.textContent.trim().length === 0) {
+                li.style.display = 'none';
+              }
+            });
+          });
+        }
+        // Continuously call removeStrayListItems every half second to catch late-rendered
+        // elements. This timer will run indefinitely, but the operation is inexpensive since
+        // it only checks a few nodes.
+        (function runRemoveLoop() {
+          removeStrayListItems();
+          setTimeout(runRemoveLoop, 500);
+        })();
         function waitForElement(selector, callback) {
           const el = document.querySelector(selector);
           if (el) {
@@ -66,7 +88,11 @@
             // Hide the existing contact form if present
             var form = contactSection.querySelector('form');
             if (form) {
-              form.style.display = 'none';
+              // Hide the container that wraps the form so that no empty box remains in the layout.
+              // In the generated markup, the form is a direct child of the grid, so hiding the
+              // parent element collapses its space completely.
+              var container = form.parentElement;
+              container.style.display = 'none';
             }
             // Create a responsive video wrapper
             var videoWrapper = document.createElement('div');
@@ -89,6 +115,9 @@
             contactSection.appendChild(videoWrapper);
           });
         });
+
+        // After the DOM has mounted, remove empty list items from pricing sections
+        removeStrayListItems();
       });
     </script>
   </body>
